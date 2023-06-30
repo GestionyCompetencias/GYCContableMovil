@@ -1,0 +1,55 @@
+<ion-content [fullscreen]="true">
+ 
+
+<div style="background-color: #3880ff; height: 400px; width: 100vw;" class="ion-text-center">
+  <span>
+    <ion-icon style="background-color: antiquewhite; border-radius: 50%; width: 60px; height: 60px; padding: 15px; margin-top: 90px;" slot="icon-only" name="cash-outline" ></ion-icon>
+  </span>
+
+</div>
+<ion-card style="position:relative; padding: 35px 5px; height: auto; width: 80vw; margin-top: -200px; margin-left: auto; margin-right: auto">
+  <ion-card-title class="ion-text-center">Control de Gastos</ion-card-title>
+  <ion-card-subtitle class="ion-text-center ion-text-uppercase">Iniciar Sesion</ion-card-subtitle>
+  <form [formGroup]="formAuth" (ngSubmit)="ingresar()">
+    <ion-card-content>
+      <ion-list>
+        <ion-item>
+          <ion-icon name="person-circle-outline" slot="start"></ion-icon>
+          <ion-input  label="Usuario"
+                      labelPlacement="floating"
+                      type="text"
+                      formControlName="usuraio"
+          ></ion-input>
+          <div *ngIf="noValido('usuraio')" color="danger" slot="error">
+            <ion-text color="danger">El Usuario es requerido</ion-text>
+          </div>
+        </ion-item>
+        <ion-item>
+          <ion-icon name="lock-closed-outline" slot="start"></ion-icon>
+          <ion-input  label="Password"
+                      labelPlacement="floating"
+                      type="password"
+                      formControlName="contra"
+          ></ion-input>
+          <div *ngIf="noValido('contra')" color="danger" slot="error">
+            <ion-text color="danger">Ingrese su contraseña</ion-text>
+          </div>
+        </ion-item>
+        
+      </ion-list>
+  
+      <ion-button type="submit" style="margin-top: 25px;" expand="block" shape="round">
+        Ingresar
+      </ion-button>
+    </ion-card-content>
+  </form>
+</ion-card>
+
+<p class="ion-text-center">
+  <a routerLink="/reset-pass">Olvido su Contraseña?</a>
+</p>
+
+
+</ion-content>
+
+<app-footer></app-footer>

@@ -1,0 +1,71 @@
+<app-header titulo="Capturar Factura" differHome="si"></app-header>
+
+<ion-content>
+  
+  <ion-grid fixed>
+    <ion-row>
+      <ion-col size="12">
+        <ion-card>
+          <ion-card-content style="height: 450px;">
+            <ion-fab *ngIf="!capturada" slot="fixed" horizontal="center" vertical="center">
+              <ion-fab-button (click)="takePicture()" color="light" size="large">
+                <ion-icon size="large" src="assets/iconos/camara-circular.svg"></ion-icon>
+              </ion-fab-button>
+            </ion-fab>
+            <p *ngIf="!capturada" style="position: sticky; top: 80%;  display: block; bottom: 0; text-align: center; margin-bottom: 35px;">Caturar Factura</p>
+
+            <ion-img *ngIf="capturada" [src]="image_path"></ion-img>
+          </ion-card-content>
+        </ion-card>
+      </ion-col>
+    </ion-row>
+
+    <ion-row>
+      <ion-col size="12">
+        <ion-button (click)="takePicture()" expand="block" fill="clear" shape="round">
+          Volver a Capturar
+        </ion-button>
+        
+        <ion-button style="margin-top: 25px;" (click)="registrarGasto()" expand="block" shape="round">
+          <ion-icon slot="start" name="save-outline"></ion-icon> 
+          Registrar Gasto
+        </ion-button>
+      </ion-col>
+    </ion-row>
+  </ion-grid>
+
+
+
+
+</ion-content>
+
+
+
+<ion-modal id="example-modal" #modal trigger="open-custom-dialog">
+  <ng-template>
+    <div class="wrapper">
+      <h1>Registro Exitoso</h1>
+
+      <p class="msg-success">
+          El gasto ha sido registrado satisfactoriamente, el mismo estara pendiente de aprobación por el personal autorizado. 
+      </p>
+
+      <p>
+        <ion-button (click)="irAlHome()" expand="block" fill="clear" shape="round">
+          <ion-icon slot="start" name="home-outline"></ion-icon>
+          Ir Al Home
+        </ion-button>
+      </p>
+      <p>
+        <ion-button (click)="nuevoGasto()" expand="block" shape="round">
+          <ion-icon slot="start" name="cash-outline"></ion-icon>
+          Registrar Nuevo Gasto
+        </ion-button>
+      </p>
+
+    
+    </div>
+  </ng-template>
+</ion-modal>
+
+<app-footer></app-footer>

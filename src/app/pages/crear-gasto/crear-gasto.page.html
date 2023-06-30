@@ -1,0 +1,104 @@
+<app-header titulo="Nuevo Gasto" differHome="si"></app-header>
+
+<ion-content [fullscreen]="true" class="ion-padding">
+  <ion-grid fixed>
+    <ion-row>
+      <ion-col size="12">
+
+        <form [formGroup]="formGasto" (ngSubmit)="onSubmit()">
+
+          <ion-list>
+            <ion-list-header class="ion-text-center">
+              <ion-label>Registrar Gasto</ion-label>
+            </ion-list-header>
+          </ion-list>
+  
+          <ion-item>
+            <ion-select label="Tipo de Gasto" 
+                        labelPlacement="floating" 
+                        formControlname="tipo"
+                        (ionChange) = "captureTipo( $event )"
+                        multiple="false" 
+                        placeholder="-- Seleccione --">
+              <ion-select-option value="pre">Prepagado a Empleado</ion-select-option>
+              <ion-select-option value="pos">Pospago por Empresa</ion-select-option>
+            </ion-select>
+          </ion-item>
+  
+          <ion-item>
+            <ion-label>Fecha Gasto</ion-label>
+            <ion-datetime-button slot="end" datetime="datetime" ></ion-datetime-button>
+  
+            <ion-modal [keepContentsMounted]="true">
+              <ng-template>
+                <ion-datetime id="datetime" (ionChange) = "captureFecha( $event )" [value]="preFecha" presentation="date" [max]="fechaAct"></ion-datetime>
+              </ng-template>
+            </ion-modal>
+          </ion-item>
+          
+          <ion-item>
+            <ion-input  label="RUT Proveedor" 
+                        labelPlacement="floating"
+                        type="text"
+                        (ionBlur) = "consultarProveedor( $event )"
+                        formControlName="rut"
+                        required>
+            </ion-input>
+          </ion-item>
+          
+          <ion-item>
+            <ion-input  label="Razon Social" 
+                        labelPlacement="floating"
+                        type="text"
+                        formControlName="proveedor"
+                        required>
+            </ion-input>
+          </ion-item>
+          
+          <ion-item>
+            <ion-input  label="Motivo Gasto" 
+                        labelPlacement="floating"
+                        type="text"
+                        formControlName="motivo"
+                        required>
+            </ion-input>
+          </ion-item>
+          
+          <ion-item>
+            <ion-input  label="Factura Nro" 
+                        labelPlacement="floating"
+                        type="text"
+                        formControlName="factura"
+                        required>
+            </ion-input>
+          </ion-item>
+        
+          <ion-item>
+            <ion-input  label="Monto Gasto" 
+                        labelPlacement="floating"
+                        type="number"
+                        formControlName="monto"
+                        required>
+            </ion-input>
+          </ion-item>
+  
+          <ion-item>
+            <ion-input  label="Observacion" 
+                        labelPlacement="floating"
+                        type="text"
+                        formControlName="observacion"
+                        required>
+            </ion-input>
+          </ion-item>
+  
+          <ion-button type="submit" style="margin-top: 35px;" expand="full" shape="round" color="primary">
+            Continuar
+            <ion-icon slot="end" name="arrow-forward-circle-outline"></ion-icon>
+          </ion-button>
+        </form>
+
+
+      </ion-col>
+    </ion-row>
+  </ion-grid>
+</ion-content>

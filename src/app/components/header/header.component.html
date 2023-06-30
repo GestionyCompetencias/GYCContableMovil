@@ -1,0 +1,21 @@
+<ion-header>
+
+  
+  <ion-toolbar color="primary">
+    
+    <ion-buttons *ngIf="differHome === 'si'" slot="start">
+      <ion-back-button defaultHref="home"></ion-back-button>
+    </ion-buttons>
+
+    <ion-title>{{ titulo }}</ion-title>
+
+    <ion-buttons slot="end">
+      <ion-button (click)="loadSettings()">
+        <ion-icon slot="icon-only" name="settings-outline"></ion-icon>
+      </ion-button>
+    </ion-buttons>
+
+  </ion-toolbar>
+
+
+</ion-header>

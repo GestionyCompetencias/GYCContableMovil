@@ -1,0 +1,47 @@
+<ion-content [fullscreen]="true">
+ 
+
+  <div style="background-color: #3880ff; height: 400px; width: 100vw;" class="ion-text-center">
+    <span>
+      <ion-icon style="background-color: antiquewhite; border-radius: 50%; width: 60px; height: 60px; padding: 15px; margin-top: 90px;" slot="icon-only" name="cash-outline" ></ion-icon>
+    </span>
+  
+  </div>
+  <ion-card style="position:relative; padding: 35px 5px; height: auto; width: 80vw; margin-top: -200px; margin-left: auto; margin-right: auto">
+    <ion-card-title class="ion-text-center">Control de Gastos</ion-card-title>
+    <ion-card-subtitle class="ion-text-center ion-text-uppercase">Seleccione la empresa y presione entrar para porder ingresar sus gastos en el sistema.</ion-card-subtitle>
+    <form [formGroup]="formSelEmpre" (ngSubmit)="entrar()">
+      <ion-card-content>
+        <ion-list>
+          <ion-item>
+            <ion-select label="Tipo de Gasto" 
+                        labelPlacement="floating" 
+                        formControlname="empresa"
+                        multiple="false" 
+                        placeholder="-- Seleccione --">
+              <ion-select-option *ngFor="let item of listEmpresas" [value]="item.id">{{ item.razonsocial }}</ion-select-option>
+            </ion-select>
+            <div *ngIf="noValido('empresa')" color="danger" slot="error">
+              <ion-text color="danger">Debe seleccionar la empresa</ion-text>
+            </div>
+          </ion-item>
+          
+        </ion-list>
+    
+        <ion-button type="submit" style="margin-top: 25px;" expand="block" shape="round">
+          Entrar
+          <ion-icon slot="end" name="arrow-forward-circle-outline"></ion-icon>
+        </ion-button>
+      </ion-card-content>
+    </form>
+  </ion-card>
+  
+  <p class="ion-text-center">
+    <a routerLink="/reset-pass">Olvido su Contraseña?</a>
+  </p>
+  
+  
+  </ion-content>
+  
+  <app-footer></app-footer>
+  

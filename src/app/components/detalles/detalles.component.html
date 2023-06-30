@@ -1,0 +1,79 @@
+<ion-header>
+  <ion-toolbar>
+    <ion-title>Detalles Gasto</ion-title>
+    <ion-buttons slot="end">
+      <ion-button (click)="cerrarModal()" [strong]="true">Cerrar</ion-button>
+    </ion-buttons>
+  </ion-toolbar>
+</ion-header>
+<ion-content class="ion-padding">
+  <ion-list>
+    <ion-item-divider>
+      <ion-label> Datos del Gasto </ion-label>
+    </ion-item-divider>
+
+    <ion-item>
+      <ion-label>
+        <h3>Tipo Gasto</h3>
+        <p *ngIf="tipo === 'pre'">Prepagado a Empleado</p>
+        <p *ngIf="tipo === 'pos'">Pospago por Empresa</p>
+      </ion-label>
+    </ion-item>
+    <ion-item>
+      <ion-label>
+        <h3>Fecha Gasto</h3>
+        <p>{{ fecha }}</p>
+      </ion-label>
+    </ion-item>
+    <ion-item>
+      <ion-label>
+        <h3>Motivo</h3>
+        <p>{{ motivo }}</p>
+      </ion-label>
+    </ion-item>
+    <ion-item>
+      <ion-label>
+        <h3>Monto </h3>
+        <p>{{ monto | number }}</p>
+      </ion-label>
+    </ion-item>
+    <ion-item>
+      <ion-label>
+        <h3>Nro Factura</h3>
+        <p>{{ factura }}</p>
+      </ion-label>
+    </ion-item>
+    <ion-item>
+      <ion-label>
+        <h3>Rut Proveedor</h3>
+        <p>{{ rutProveedor }}</p>
+      </ion-label>
+    </ion-item>
+    <ion-item>
+      <ion-label>
+        <h3>Razon Social</h3>
+        <p>{{ proveedor }}</p>
+      </ion-label>
+    </ion-item>
+    <ion-item>
+      <ion-label>
+        <h3>Observación</h3>
+        <p>{{ observacion }}</p>
+      </ion-label>
+    </ion-item>
+    <ion-item>
+      <ion-label>
+          <h3>Geolocalización</h3>
+          <p>Lat: {{ latitud }} - Lng: {{ longitud }}</p>
+        </ion-label>
+    </ion-item>
+
+    <ion-item-divider>
+      <ion-label> Evidencia </ion-label>
+    </ion-item-divider>
+
+    <ion-item>
+      <img [src]="path_image" alt="evidencia">
+    </ion-item>
+  </ion-list>
+</ion-content>

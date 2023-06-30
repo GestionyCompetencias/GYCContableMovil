@@ -1,0 +1,26 @@
+ion-modal#example-modal {
+    --width: fit-content;
+    --min-width: 250px;
+    --max-width: 90vw;
+    --height: fit-content;
+    --border-radius: 6px;
+    --padding: 10px;
+    --box-shadow: 0 28px 48px rgba(0, 0, 0, 0.4);
+  }
+  
+  ion-modal#example-modal h1, p {
+    margin: 20px 20px 10px 20px;
+    text-align: center;
+  }
+
+  .msg-success{
+    background-color: #2dd36f; 
+    padding: 10px 3px; 
+    border-radius: 5px; 
+    color: #fff;
+  }
+  
+  
+  ion-modal#example-modal .wrapper {
+    margin-bottom: 10px;
+  }

@@ -1,0 +1,104 @@
+<app-header titulo="Control de Gastos"></app-header>
+
+<ion-content [fullscreen]="true">
+  
+  <ion-grid fixed>
+    <ion-row>
+      <ion-col size="6">
+        <ion-card color="secondary">
+          <ion-card-content>
+            <ion-grid class="ion-no-padding">
+              <ion-row>
+                <ion-col size="3">
+                  <ion-icon src="assets/iconos/comprobacion-de-lista.svg" size="large"></ion-icon>
+                </ion-col>
+                <ion-col size="9">
+                  <h2 class="ion-text-right" style="font-size: 2rem;">{{ totalRegistrados }}</h2>
+                </ion-col>
+              </ion-row>
+              <ion-row>
+                <ion-col size="12"class="ion-text-right">
+                  Total Registrados
+                </ion-col>
+              </ion-row>
+
+              <ion-row>
+                <ion-col size="12">
+                  <ion-tab-button>
+                    <ion-label>Ver más...</ion-label>
+                  </ion-tab-button>
+                </ion-col>
+              </ion-row>
+            </ion-grid>
+          </ion-card-content>
+        </ion-card>
+      </ion-col>
+      <ion-col size="6">
+        <ion-card color="success">
+          <ion-card-content>
+            <ion-grid class="ion-no-padding">
+              <ion-row>
+                <ion-col size="3">
+                  <ion-icon src="assets/iconos/money-cheque-editar.svg" size="large"></ion-icon>
+                </ion-col>
+                <ion-col size="9">
+                  <h2 class="ion-text-right" style="font-size: 18px;">{{ montoTotalRegistrado | number }}</h2>
+                </ion-col>
+              </ion-row>
+              <ion-row>
+                <ion-col size="12"class="ion-text-right">
+                  Total Gastos
+                </ion-col>
+              </ion-row>
+
+              <ion-row>
+                <ion-col size="12">
+                  <ion-tab-button>
+                    <ion-label>Ver más...</ion-label>
+                  </ion-tab-button>
+                </ion-col>
+              </ion-row>
+            </ion-grid>
+          </ion-card-content>
+        </ion-card>
+      </ion-col>
+    </ion-row>
+
+    <ion-row>
+      <ion-col size="12">
+
+        <ion-list>
+          <ion-list-header>
+            <ion-label>Ultiimos Registrados</ion-label>
+            <ion-button>Ver Todos</ion-button>
+          </ion-list-header>
+
+          <ion-item *ngFor="let item of lastGastos; let i=index" button detail="true" (click)="detalles(item)">
+            <ion-icon src="assets/iconos/money-cheque-editar-outline.svg" slot="start"></ion-icon>
+            <ion-label>
+              <h3>{{ item.motivo }}</h3>
+              <p><strong>Fecha Reg: </strong>{{ item.fecha }} - <strong>Monto: </strong>{{ item.monto | number }}</p>
+            </ion-label>
+          </ion-item>
+        </ion-list>
+
+      </ion-col>
+    </ion-row>
+  </ion-grid>
+
+
+  
+
+
+
+
+
+
+  <ion-fab slot="fixed" horizontal="end" vertical="bottom">
+    <ion-fab-button (click)="agregarGasto()">
+      <ion-icon name="add"></ion-icon>
+    </ion-fab-button>
+  </ion-fab>
+</ion-content>
+
+<app-footer></app-footer>
