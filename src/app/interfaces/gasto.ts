@@ -7,20 +7,48 @@ export interface Gasto {
     observacion : string;
     latitud     : string;
     longitud    : string;
-    rutProveedor: string;
+    rut         : string;
     proveedor   : string;
 }
 
 export interface GastoTemp {
-    tipo        : string;
+    tipo        : number;
+    tipoDoc     : number;
     fecha       : string;
     motivo      : string;
     monto       : number;
     factura     : string;
     observacion : string;
-    latitud     : string;
-    longitud    : string;
-    rutProveedor: string;
+    latitud     : number;
+    longitud    : number;
+    rut         : string;
     proveedor   : string;
     photo       : string; 
 }
+
+export interface GastoApi{
+    id          : number;
+    tipogasto   : number;
+    fecha       : string;
+    rutprov     : string;
+    razonsocial : string;
+    motivogasto : string;
+    tipodoc     : number;
+    docnro      : string;
+    monto       : number;
+    observ      : string;
+    habilitado  : number;
+    aprobado    : number;
+    motivo      : string;
+    origen      : number;
+    usuario     : string;
+    fregistro   : string;
+    hregistro   : string,
+    longitud    : number;
+    latitud     : number;
+    dispositivo : string;
+  }
+
+  interface Hrehistro {
+    ticks: string;
+  }

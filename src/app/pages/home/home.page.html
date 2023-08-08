@@ -24,7 +24,7 @@
 
               <ion-row>
                 <ion-col size="12">
-                  <ion-tab-button>
+                  <ion-tab-button ((clik)="loadHistory()">
                     <ion-label>Ver más...</ion-label>
                   </ion-tab-button>
                 </ion-col>
@@ -69,15 +69,15 @@
 
         <ion-list>
           <ion-list-header>
-            <ion-label>Ultiimos Registrados</ion-label>
-            <ion-button>Ver Todos</ion-button>
+            <ion-label>Ultimos Registrados</ion-label>
+            <ion-button (click)="loadHistory()">Ver Todos</ion-button>
           </ion-list-header>
 
           <ion-item *ngFor="let item of lastGastos; let i=index" button detail="true" (click)="detalles(item)">
             <ion-icon src="assets/iconos/money-cheque-editar-outline.svg" slot="start"></ion-icon>
             <ion-label>
-              <h3>{{ item.motivo }}</h3>
-              <p><strong>Fecha Reg: </strong>{{ item.fecha }} - <strong>Monto: </strong>{{ item.monto | number }}</p>
+              <h3>{{ item.motivogasto }}</h3>
+              <p><strong>Fecha Reg: </strong>{{ item.fecha.substring(0, 10) }} - <strong>Monto: </strong>{{ item.monto | number }}</p>
             </ion-label>
           </ion-item>
         </ion-list>

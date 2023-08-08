@@ -1,10 +1,11 @@
 import { Component, OnInit } from '@angular/core';
 import { ModalController, NavController } from '@ionic/angular';
 import { HistorialGastosPage } from '../historial-gastos/historial-gastos.page';
-import { GastoTemp } from 'src/app/interfaces/gasto';
+import { GastoApi, GastoTemp } from 'src/app/interfaces/gasto';
 import { DetallesComponent } from 'src/app/components/detalles/detalles.component';
 import { StorageService } from 'src/app/services/storage.service';
 import { DataBaseService } from 'src/app/services/data-base.service';
+import { GastosService } from 'src/app/services/gastos.service';
 
 @Component({
   selector: 'app-home',
@@ -13,32 +14,28 @@ import { DataBaseService } from 'src/app/services/data-base.service';
 })
 export class HomePage implements OnInit {
 
-  componente: HistorialGastosPage = new HistorialGastosPage();
-
-  ultimosGastos: GastoTemp[] = [];
-  lastGastos: GastoTemp[] = [];
+  ultimosGastos: GastoApi[] = [];
+  lastGastos: GastoApi[] = [];
   totalRegistrados: number = 0;
   montoTotalRegistrado: number = 0;
 
+  idEmpresa!: number;
+
   constructor(private navCtrl: NavController,
               private modalCtrl: ModalController,
-              private dataBase: DataBaseService) { }
+              private storageServ: StorageService,
+              private gastoServ: GastosService) { }
 
 
 
-  ngOnInit() {
+  async ngOnInit() {
 
-    this.dataBase.createOpenDataBase();
-    this.dataBase.createTable();
+      await this.storageServ.getData('idEmpresa').then(data => {
+        const idEmp = parseInt(data) || 0;
+        this.idEmpresa = idEmp;
+      });
 
-
-    this.dataBase.getAll();
-
-
-
-
-
-    /* this.storageServ.getData('gastosLocales').then(data => {
+     /* this.storageServ.getData('gastosLocales').then(data => {
       console.log('gastos', data);
       const ultGastos = data || '[]';
       this.ultimosGastos = JSON.parse(ultGastos);
@@ -54,7 +51,7 @@ export class HomePage implements OnInit {
       })
     }); */
 
-    
+    await this.getAllGastos();
   }
 
   getMontoTotal(){
@@ -66,11 +63,29 @@ export class HomePage implements OnInit {
     this.montoTotalRegistrado = monto;
   }
 
+  getAllGastos(){
+    this.gastoServ.getAll(this.idEmpresa).subscribe({
+      next: resp => {
+        this.ultimosGastos = resp.info.data || [];
+        this.totalRegistrados = this.ultimosGastos.length;
+        this.getMontoTotal();
+        let index = 0;
+        this.ultimosGastos.forEach(item => {
+          if (index < 5) {
+            this.lastGastos.push(item);
+          }
+          index++;
+        });
+      },
+      error: err => console.log(err)
+    })
+  }
+
   agregarGasto(){
     this.navCtrl.navigateForward('crear-gasto');
   }
 
-  async detalles(item: GastoTemp){
+  async detalles(item: GastoApi){
     const modal = await this.modalCtrl.create({
       component: DetallesComponent,
       componentProps: item
@@ -80,9 +95,13 @@ export class HomePage implements OnInit {
     const { data, role } = await modal.onWillDismiss();
   }
 
+  loadHistory(){
+    this.navCtrl.navigateForward('historial-gastos');
+  }
 
 
 
+  
   
 
 }

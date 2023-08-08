@@ -20,7 +20,8 @@ export class SettingPage implements OnInit {
 
   ngOnInit() {
     this.storage.getData('gpsActive').then(data =>{
-      this.gpsActive = data || true;
+      let dataBoolean: boolean = (data === 'true')?true:false;
+      this.gpsActive = dataBoolean;
     });
   }
 

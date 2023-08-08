@@ -15,6 +15,8 @@ export class LoginPage implements OnInit {
 
   isSubmited: boolean = false;
 
+  dataUser: any = {};
+
   formAuth: FormGroup = this.fb.group({
     usuraio: ['', Validators.required],
     contra: ['', Validators.required] 
@@ -43,15 +45,15 @@ export class LoginPage implements OnInit {
     const auth: Auth = { ...this.formAuth.value }
 
     this.auth.validateUser(auth).subscribe({
-      next: resp => {
+      next: async (resp) => {
         this.loadingCtrl.dismiss();
         if (resp.info.result === 1) {
-          const dataLogin = resp.info.data.pop();
-
+          const dataLogin = await resp.info.data.pop();
+          //await this.getDatauser(dataLogin.idUsu);
+          
           this.storage.set('x-token', dataLogin.token);
           this.storage.set('idUser', dataLogin.idUsu);
-
-
+          this.storage.set('rutUser', auth.usuraio);
          /*  localStorage.setItem('x-token', dataLogin.token);
           localStorage.setItem('idUser', dataLogin.idUsu); */
           if (dataLogin.usuarioEmpresas.length > 1) {
@@ -70,6 +72,18 @@ export class LoginPage implements OnInit {
         console.log(err)
       }
     })
+  }
+
+  getDatauser(idUser: number){
+
+    console.log(idUser);
+    
+    this.auth.dataUser(idUser).subscribe({
+      next: resp => {
+        this.dataUser = resp.info.data.pop();
+        this.storage.set('rutUser', this.dataUser.usuario);
+      }, error: err => console.log(err)
+    });
   }
 
 

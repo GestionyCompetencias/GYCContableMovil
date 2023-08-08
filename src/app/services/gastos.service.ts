@@ -1,7 +1,7 @@
 import { Injectable } from '@angular/core';
 import { HttpClient, HttpHeaders } from '@angular/common/http';
 import { environment } from 'src/environments/environment.prod';
-import { Gasto } from '../interfaces/gasto';
+import { GastoApi } from '../interfaces/gasto';
 import { ApiResponse } from '../interfaces/response';
 
 const BASE_URL = environment.base_url;
@@ -18,7 +18,19 @@ export class GastosService {
 
   constructor(private http: HttpClient) { }
 
-  crearGasto(data: Gasto){
-    return this.http.post<ApiResponse>(`${ BASE_URL }`, data, { headers: this._header});
+  crearGasto(data: GastoApi, idEmpresa: number){
+    return this.http.post<ApiResponse>(`${ BASE_URL }/gastos?empresa=${ idEmpresa }`, data, { headers: this._header});
+  }
+  
+  getAll(idEmpresa: number){
+    return this.http.get<ApiResponse>(`${ BASE_URL }/gastos/consultargastos?empresa=${ idEmpresa }`, { headers: this._header});
+  }
+  
+  getGatsosByReg(idEmpresa: number, fechaIni: string, fechaFin: string){
+    return this.http.get<ApiResponse>(`${ BASE_URL }/gastos/gastosfecharegistro?fechaI=${ fechaIni }&fechaF=${ fechaFin }&empresa=${ idEmpresa }`, { headers: this._header});
+  }
+  
+  getGatsosByFechDoc(idEmpresa: number, fechaIni: string, fechaFin: string){
+    return this.http.get<ApiResponse>(`${ BASE_URL }/gastos/gastosfechadoc?fechaI=${ fechaIni }&fechaF=${ fechaFin }&empresa=${ idEmpresa }`, { headers: this._header});
   }
 }

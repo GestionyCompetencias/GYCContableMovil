@@ -4,6 +4,11 @@ import { HeaderComponent } from './header/header.component';
 import { IonicModule } from '@ionic/angular';
 import { FooterComponent } from './footer/footer.component';
 import { DetallesComponent } from './detalles/detalles.component';
+import { NgxMapboxGLModule } from 'ngx-mapbox-gl';
+import { environment } from 'src/environments/environment.prod';
+import { MapViewComponent } from './map-view/map-view.component';
+
+const API_KEY = environment.token_map;
 
 
 
@@ -11,16 +16,21 @@ import { DetallesComponent } from './detalles/detalles.component';
   declarations: [
     HeaderComponent,
     FooterComponent,
-    DetallesComponent
+    DetallesComponent,
+    MapViewComponent,
   ],
   imports: [
     CommonModule,
-    IonicModule
+    IonicModule,
+    NgxMapboxGLModule.withConfig({
+      accessToken: API_KEY
+    })
   ],
   exports: [
     HeaderComponent,
     FooterComponent,
-    DetallesComponent
+    DetallesComponent,
+    MapViewComponent
   ]
 })
 export class ComponentsModule { }

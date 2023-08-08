@@ -25,15 +25,22 @@ export class AuthService {
     return this.http.post<ApiResponse>(`${ BASE_URL }/login`, data, { headers: this._header });
   }
   
+  dataUser(idUser: number){
+    return this.http.get<ApiResponse>(`${ BASE_URL }/usuarios/consultausuario?id=${idUser}`, { headers: this._header });
+  }
+
+
+  
   logout(){
     this.storage.remove('x-token');
     this.storage.remove('idUser');
+    this.storage.remove('rutUser');
     this.storage.remove('idEmpresa');
   }
 
   isLogged(){
     return this.storage.getData('x-token').then(data => {
-      const token: string = data || '';
+      const token: string = data;
       if(token.trim().length === 0){
         return false;
       } else {
