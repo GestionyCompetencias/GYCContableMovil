@@ -3,9 +3,10 @@ import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { Geolocation } from '@capacitor/geolocation';
 import { AlertController, NavController } from '@ionic/angular';
 import { Network } from '@capacitor/network';
-import { Gasto } from 'src/app/interfaces/gasto';
+import { Gasto, GastoTemp } from 'src/app/interfaces/gasto';
 import { DataService } from 'src/app/services/data.service';
 import { StorageService } from 'src/app/services/storage.service';
+import { Preferences } from '@capacitor/preferences';
 
 @Component({
   selector: 'app-crear-gasto',
@@ -21,9 +22,13 @@ export class CrearGastoPage implements OnInit {
 
   gpsActivo: boolean = true;
 
+  tipoSel: any = '';
+  tipoDoc: any = '';
+
 
   formGasto: FormGroup = this.fb.group({
     tipo: ['', Validators.required],
+    tipoDoc: ['', Validators.required],
     fecha: ['', Validators.required],
     motivo: ['', Validators.required],
     monto: ['', Validators.required],
@@ -38,10 +43,10 @@ export class CrearGastoPage implements OnInit {
   constructor(private fb: FormBuilder,
               private alertCtrl: AlertController,
               private dataServ: DataService,
-              private storage: StorageService,
+              private appStorage: StorageService,
               private navCtrl: NavController) { }
 
-  ngOnInit() {
+  async ngOnInit() {
     const fecha = new Date();
     let mes: any = fecha.getMonth()+1;
     mes = (mes.toString().length > 1) ? mes : '0'+mes; 
@@ -49,39 +54,44 @@ export class CrearGastoPage implements OnInit {
     dia = (dia.toString().length > 1) ? dia : '0'+dia; 
     this.fechaAct = `${ fecha.getFullYear() }-${ mes }-${ dia }T23:59:59`;
     this.preFecha = `${ fecha.getFullYear() }-${ mes }-${ dia }T23:59:59`;
+
+    console.log(this.preFecha);
     
-    this.storage.getData('idEmpresa').then(data => {
-      const idEmp = data || '0';
-      this.idEmpresa = parseInt(idEmp);
-    });
+
+    this.formGasto.get('fecha')?.reset(this.preFecha);
+
+    const idemp = await this.appStorage.get('empresa');
+    let idEmp = idemp || '0';
+    this.idEmpresa = parseInt(idEmp);
+
     this.getCurrentLocation();
     this.preLoadGasto();
   }
   
-  preLoadGasto(){
+  async preLoadGasto(){
 
-    this.storage.getData('newGasto').then( data => {
+    const gasto = await this.appStorage.get('newGasto') || '';
+    if(gasto.trim().length === 0) return;
 
-      const gasto: string = data || '';
-      if(gasto.trim().length === 0) return;
-      
-      const preGasto: Gasto = JSON.parse(gasto);
-      
-      console.log('gasto precargado: ', preGasto);
-      
-  
-      this.preFecha = `${ preGasto.fecha }T23:59:59`;
-  
-      this.formGasto.reset({
-        'tipo': preGasto.tipo,
-        'fecha': preGasto.fecha,
-        'motivo': preGasto.motivo,
-        'monto': preGasto.monto,
-        'factura': preGasto.factura,
-        'rut': preGasto.rutProveedor,
-        'proveedor': preGasto.proveedor,
-        'observacion': preGasto.observacion,
-      });
+    const preGasto: GastoTemp = JSON.parse(gasto);
+    console.log('gasto precargado: ', preGasto);
+    
+    let fecha = `${ preGasto.fecha }T23:59:59`;
+
+    this.formGasto.get('fecha')?.reset(this.preFecha);
+    this.tipoSel = preGasto.tipo;
+    this.tipoDoc = preGasto.tipoDoc;
+    
+    this.formGasto.reset({
+      'tipo': preGasto.tipo,
+      'tipoDoc': preGasto.tipoDoc,
+      'fecha': fecha,
+      'motivo': preGasto.motivo,
+      'monto': preGasto.monto,
+      'factura': preGasto.factura,
+      'rut': preGasto.rut,
+      'proveedor': preGasto.proveedor,
+      'observacion': preGasto.observacion,
     });
 
   }
@@ -94,6 +104,10 @@ export class CrearGastoPage implements OnInit {
 
   captureTipo( event: any ){
     this.formGasto.get('tipo')?.reset(event.detail.value)
+  }
+  
+  captureTipoDoc( event: any ){
+    this.formGasto.get('tipoDoc')?.reset(event.detail.value)
   }
 
   async getCurrentLocation(){
@@ -118,12 +132,9 @@ export class CrearGastoPage implements OnInit {
   }
 
   async onSubmit(){
-    const status = await Network.getStatus();
-    
-    const newGasto: Gasto = { ...this.formGasto.value }
+    const newGasto: GastoTemp = { ...this.formGasto.value }
 
-    this.storage.set('newGasto', JSON.stringify(newGasto));
-
+    await this.appStorage.set('newGasto', JSON.stringify(newGasto));
     this.navCtrl.navigateForward('foto-gasto');
   }
 
@@ -137,32 +148,13 @@ export class CrearGastoPage implements OnInit {
         
         if (resp.info.result === 1) {
           const dataProv = resp.info.data.pop();
-          this.formGasto.get('proveedor')?.reset(dataProv.nombres);
+          this.formGasto.get('proveedor')?.reset(`${dataProv.nombres} ${ dataProv.apellidos}`);
         }
       },
       error: err => console.log(err)
     });
     
   }
-  
-  /* async onSubmit(){
-    const status = await Network.getStatus();
-
-    if (status.connected) {
-      
-      const newGasto: Gasto = { ...this.formGasto.value }
-
-      console.log(newGasto);
-      
-    } else {
-      const gastos = localStorage.getItem('gastos') || '';
-      const arrGastos: Gasto[] = JSON.parse(gastos);
-      arrGastos.push(this.formGasto.value)
-      localStorage.setItem('gastos', JSON.stringify(arrGastos));
-    }
-  
-    console.log('Network status:', status);
-  } */
 
   async presentAlert(message: string, titulo?: string){
     const alert = this.alertCtrl.create({

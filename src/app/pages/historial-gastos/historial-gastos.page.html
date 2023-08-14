@@ -1,13 +1,14 @@
-<ion-header [translucent]="true">
-  <ion-toolbar>
-    <ion-title>historialGastos</ion-title>
-  </ion-toolbar>
-</ion-header>
 
-<ion-content [fullscreen]="true">
-  <ion-header collapse="condense">
-    <ion-toolbar>
-      <ion-title size="large">historialGastos</ion-title>
-    </ion-toolbar>
-  </ion-header>
-</ion-content>
+
+<ion-tabs>
+  <ion-tab-bar slot="bottom">
+    <ion-tab-button tab="gastos-fechagas">
+      <ion-icon name="calendar"></ion-icon>
+      Fecha Gasto
+    </ion-tab-button>
+    <ion-tab-button tab="gastos-fechareg">
+      <ion-icon name="Calendar-clear-outline"></ion-icon>
+      Fecha Registro
+    </ion-tab-button>
+  </ion-tab-bar>
+</ion-tabs>

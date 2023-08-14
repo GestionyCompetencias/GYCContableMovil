@@ -1,4 +1,5 @@
 import { Injectable } from '@angular/core';
+import { Capacitor } from '@capacitor/core';
 import { SQLite, SQLiteObject } from '@awesome-cordova-plugins/sqlite/ngx';
 import { GastoTemp } from '../interfaces/gasto';
 
@@ -55,7 +56,7 @@ export class DataBaseService {
       '${ data.motivo }',
       '${ data.monto }',
       '${ data.factura}',
-      '${ data.rutProveedor }',
+      '${ data.rut }',
       '${ data.proveedor }',
       '${ data.observacion }',
       '${ data.photo }',
@@ -94,7 +95,7 @@ export class DataBaseService {
       motivo='${ data.motivo }',
       monto='${ data.monto }',
       factura='${ data.factura }',
-      rut='${ data.rutProveedor }',
+      rut='${ data.rut }',
       proveedor='${ data.proveedor }',
       observacion='${ data.observacion }',
       foto='${ data.photo }',

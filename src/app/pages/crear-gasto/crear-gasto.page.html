@@ -18,10 +18,11 @@
                         labelPlacement="floating" 
                         formControlname="tipo"
                         (ionChange) = "captureTipo( $event )"
-                        multiple="false" 
+                        multiple="false"
+                        [value]="tipoSel"
                         placeholder="-- Seleccione --">
-              <ion-select-option value="pre">Prepagado a Empleado</ion-select-option>
-              <ion-select-option value="pos">Pospago por Empresa</ion-select-option>
+              <ion-select-option value="1">Prepagado a Empleado</ion-select-option>
+              <ion-select-option value="2">Pospago por Empresa</ion-select-option>
             </ion-select>
           </ion-item>
   
@@ -63,9 +64,22 @@
                         required>
             </ion-input>
           </ion-item>
+
+          <ion-item>
+            <ion-select label="Tipo de Documento" 
+                        labelPlacement="floating" 
+                        formControlname="tipoDoc"
+                        (ionChange) = "captureTipoDoc( $event )"
+                        multiple="false" 
+                        [value]="tipoDoc"
+                        placeholder="-- Seleccione --">
+              <ion-select-option value="1">Boleta</ion-select-option>
+              <ion-select-option value="2">Factura</ion-select-option>
+            </ion-select>
+          </ion-item>
           
           <ion-item>
-            <ion-input  label="Factura Nro" 
+            <ion-input  label="Documnto Nro" 
                         labelPlacement="floating"
                         type="text"
                         formControlName="factura"

@@ -15,20 +15,20 @@
     <ion-item>
       <ion-label>
         <h3>Tipo Gasto</h3>
-        <p *ngIf="tipo === 'pre'">Prepagado a Empleado</p>
-        <p *ngIf="tipo === 'pos'">Pospago por Empresa</p>
+        <p *ngIf="tipogasto === 1">Prepagado a Empleado</p>
+        <p *ngIf="tipogasto === 2">Pospago por Empresa</p>
       </ion-label>
     </ion-item>
     <ion-item>
       <ion-label>
         <h3>Fecha Gasto</h3>
-        <p>{{ fecha }}</p>
+        <p>{{ fecha.substring(0, 10) }}</p>
       </ion-label>
     </ion-item>
     <ion-item>
       <ion-label>
         <h3>Motivo</h3>
-        <p>{{ motivo }}</p>
+        <p>{{ motivogasto }}</p>
       </ion-label>
     </ion-item>
     <ion-item>
@@ -39,41 +39,45 @@
     </ion-item>
     <ion-item>
       <ion-label>
-        <h3>Nro Factura</h3>
-        <p>{{ factura }}</p>
+        <h3>Tipo Documento</h3>
+        <p *ngIf="tipodoc === 1">Boleta</p>
+        <p *ngIf="tipodoc === 2">Factura</p>
+      </ion-label>
+    </ion-item>
+    <ion-item>
+      <ion-label>
+        <h3>Nro Documento</h3>
+        <p>{{ docnro }}</p>
       </ion-label>
     </ion-item>
     <ion-item>
       <ion-label>
         <h3>Rut Proveedor</h3>
-        <p>{{ rutProveedor }}</p>
+        <p>{{ rutprov }}</p>
       </ion-label>
     </ion-item>
     <ion-item>
       <ion-label>
         <h3>Razon Social</h3>
-        <p>{{ proveedor }}</p>
+        <p>{{ razonsocial }}</p>
       </ion-label>
     </ion-item>
     <ion-item>
       <ion-label>
         <h3>Observación</h3>
-        <p>{{ observacion }}</p>
+        <p>{{ observ }}</p>
       </ion-label>
     </ion-item>
     <ion-item>
       <ion-label>
-          <h3>Geolocalización</h3>
-          <p>Lat: {{ latitud }} - Lng: {{ longitud }}</p>
-        </ion-label>
+        <h3>Geolocalización</h3>
+        <p>Lat: {{ latitud }} - Lng: {{ longitud }}</p>
+      </ion-label>
+      <ion-button slot="end" (click)="showMap(latitud, longitud)" fill="clear" shape="round">
+        <ion-icon slot="icon-only" name="map-outline"></ion-icon>
+      </ion-button>
     </ion-item>
 
-    <ion-item-divider>
-      <ion-label> Evidencia </ion-label>
-    </ion-item-divider>
-
-    <ion-item>
-      <img [src]="path_image" alt="evidencia">
-    </ion-item>
+    
   </ion-list>
 </ion-content>

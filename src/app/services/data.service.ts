@@ -16,6 +16,6 @@ export class DataService {
   constructor(private http: HttpClient) { }
 
   getProveedorByRut(idEmpresa: number, rut: string){
-    return this.http.get<ApiResponse>(`${ BASE_URL }/personas/consultapersonarut?rut=${ rut }&empresa=${ idEmpresa }`, { headers: this._header});
+    return this.http.get<ApiResponse>(`${ BASE_URL }/proveedores/consultaproveedor?rut=${ rut }&empresa=${ idEmpresa }`, { headers: this._header});
   }
 }

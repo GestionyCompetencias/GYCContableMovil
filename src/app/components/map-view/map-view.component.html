@@ -1,0 +1,20 @@
+<ion-header>
+  <ion-toolbar>
+    <ion-title>Geolalizacion Gasto</ion-title>
+    <ion-buttons slot="end">
+      <ion-button (click)="cerrarModal()" [strong]="true">Cerrar</ion-button>
+    </ion-buttons>
+  </ion-toolbar>
+</ion-header>
+
+<ion-content [fullscreen]="true">
+  <div id="map"></div>
+
+
+  <!-- <mgl-map [style]="estiloMap" [zoom]="zoomMap" [center]="centerMap" ngClass="map">
+    <mgl-control mglNavigation></mgl-control>
+    <mgl-control mglScale  unit="imperial" position="top-right"></mgl-control>
+
+    <mgl-marker [lngLat]="centerMap"></mgl-marker>
+  </mgl-map> -->
+</ion-content>
