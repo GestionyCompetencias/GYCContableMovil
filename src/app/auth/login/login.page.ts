@@ -5,6 +5,7 @@ import { AlertController, LoadingController, NavController } from "@ionic/angula
 import { Auth } from 'src/app/interfaces/auth';
 import { AuthService } from 'src/app/services/auth.service';
 import { StorageService } from 'src/app/services/storage.service';
+import { Preferences } from '@capacitor/preferences';
 
 @Component({
   selector: 'app-login',
@@ -24,8 +25,8 @@ export class LoginPage implements OnInit {
   
   constructor(private auth: AuthService,
               private fb: FormBuilder,
-              private storage: StorageService,
               private nav: NavController,
+              private appStorage: StorageService,
               private alertController: AlertController,
               private loadingCtrl: LoadingController) { }
 
@@ -36,7 +37,7 @@ export class LoginPage implements OnInit {
     return this.formAuth.get(campo)?.errors && this.isSubmited; 
   }
 
-  ingresar(){
+  async ingresar(){
     this.isSubmited = true;
     this.showLoading();
 
@@ -50,16 +51,19 @@ export class LoginPage implements OnInit {
         if (resp.info.result === 1) {
           const dataLogin = await resp.info.data.pop();
           //await this.getDatauser(dataLogin.idUsu);
-          
-          this.storage.set('x-token', dataLogin.token);
-          this.storage.set('idUser', dataLogin.idUsu);
-          this.storage.set('rutUser', auth.usuraio);
-         /*  localStorage.setItem('x-token', dataLogin.token);
-          localStorage.setItem('idUser', dataLogin.idUsu); */
+
+          await this.appStorage.set('x-token', dataLogin.token );
+          await this.appStorage.set('usuario', dataLogin.idUsu );
+          await this.appStorage.set('rutUser', auth.usuraio );
+          /* await Preferences.set({ key: 'x-token', value: dataLogin.token });
+          await Preferences.set({ key: 'idUser', value: dataLogin.idUsu });
+          await Preferences.set({ key: 'rutUser', value: auth.usuraio }); */
+
           if (dataLogin.usuarioEmpresas.length > 1) {
             this.nav.navigateRoot('select-empresa');
           } else {
-            this.storage.set('idEmpresa', dataLogin.usuarioEmpresas[0].idempre);
+            await this.appStorage.set('empresa', dataLogin.usuarioEmpresas[0].idempre);
+            //await Preferences.set({ key: 'idEmpresa', value: dataLogin.usuarioEmpresas[0].idempre });
             //localStorage.setItem('idEmpresa', dataLogin.usuarioEmpresas[0].idempre);
             this.nav.navigateRoot('home');
           }
@@ -81,7 +85,7 @@ export class LoginPage implements OnInit {
     this.auth.dataUser(idUser).subscribe({
       next: resp => {
         this.dataUser = resp.info.data.pop();
-        this.storage.set('rutUser', this.dataUser.usuario);
+        Preferences.set({ key: 'idEmpresa', value: this.dataUser.usuario });
       }, error: err => console.log(err)
     });
   }

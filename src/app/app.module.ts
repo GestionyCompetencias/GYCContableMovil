@@ -12,6 +12,7 @@ import { IonicStorageModule } from '@ionic/storage-angular';
 import { AppComponent } from './app.component';
 import { AppRoutingModule } from './app-routing.module';
 import { ComponentsModule } from './components/components.module';
+import { Drivers } from '@ionic/storage';
 
 @NgModule({
   declarations: [AppComponent],

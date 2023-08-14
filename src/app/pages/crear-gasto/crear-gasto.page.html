@@ -18,7 +18,8 @@
                         labelPlacement="floating" 
                         formControlname="tipo"
                         (ionChange) = "captureTipo( $event )"
-                        multiple="false" 
+                        multiple="false"
+                        [value]="tipoSel"
                         placeholder="-- Seleccione --">
               <ion-select-option value="1">Prepagado a Empleado</ion-select-option>
               <ion-select-option value="2">Pospago por Empresa</ion-select-option>
@@ -70,6 +71,7 @@
                         formControlname="tipoDoc"
                         (ionChange) = "captureTipoDoc( $event )"
                         multiple="false" 
+                        [value]="tipoDoc"
                         placeholder="-- Seleccione --">
               <ion-select-option value="1">Boleta</ion-select-option>
               <ion-select-option value="2">Factura</ion-select-option>

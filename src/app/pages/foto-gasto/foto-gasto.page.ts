@@ -6,6 +6,11 @@ import { IonModal, LoadingController, NavController } from '@ionic/angular';
 import { Gasto, GastoApi, GastoTemp } from 'src/app/interfaces/gasto';
 import { GastosService } from 'src/app/services/gastos.service';
 import { StorageService } from 'src/app/services/storage.service';
+import { HttpHeaders } from '@angular/common/http';
+import { environment } from 'src/environments/environment';
+import { Preferences } from '@capacitor/preferences';
+
+const BASE_URL = environment.base_url;
 
 @Component({
   selector: 'app-foto-gasto',
@@ -13,10 +18,13 @@ import { StorageService } from 'src/app/services/storage.service';
   styleUrls: ['./foto-gasto.page.scss'],
 })
 export class FotoGastoPage implements OnInit {
+  _header = new HttpHeaders()
+                    .set('x-token', localStorage.getItem('token') || '')  
+                    .set('Content-Type', 'application/json');
 
   @ViewChild(IonModal) modal!: IonModal;
 
-  _gastoDerfault: Gasto = {
+  _gastoDefault: Gasto = {
     factura: '',
     fecha: '',
     latitud: '',
@@ -36,14 +44,16 @@ export class FotoGastoPage implements OnInit {
   fechaAct!: string;
   hora!: string;
 
+  file!: any;
+
   gastosLocales: GastoTemp[] = [];
 
   capturada: boolean = false;
   imagenCapturada!: any;
   image_path!: string;
-  
+
   constructor(private loadingCtrl: LoadingController,
-              private storage: StorageService,
+              private appStorage: StorageService,
               private gastosServ: GastosService,
               private nav: NavController) { }
   
@@ -65,15 +75,10 @@ export class FotoGastoPage implements OnInit {
     this.hora = `${ h }:${ m }:${ s }`;
 
     
-    await this.storage.getData('idEmpresa').then(data => {
-      const idEmp = data || '0';
-      this.idEmpresa = parseInt(idEmp);
-    });
-    
-    await this.storage.getData('rutUser').then(data => {
-      const user = data;
-      this.usuario = user;
-    });
+    const idEmp = await this.appStorage.get('empresa') || '0';
+    const idus = await this.appStorage.get('usuario') || '0';
+    this.idEmpresa = parseInt(idEmp);
+    this.usuario = parseInt(idus);
   }
   
   async takePicture(){
@@ -85,10 +90,18 @@ export class FotoGastoPage implements OnInit {
     }
 
     const image = await Camera.getPhoto(imgOptions);
-
-    this.imagenCapturada = await image.webPath;
-    this.image_path = this.imagenCapturada;
     this.capturada = true;
+    
+    this.imagenCapturada = image.webPath;
+    this.image_path = `data:image/jpeg;base64,${image.base64String}`; 
+    const base64Response = await  fetch(this.image_path);
+    const blob = await base64Response.blob();
+    this.file = this.blobToFile(blob, 'evidencia_gasto');
+  }
+
+
+  blobToFile(theBlob: any, fileName: string){       
+    return new File([theBlob], fileName, { lastModified: new Date().getTime(), type: theBlob.type })
   }
 
   async registrarGasto(){
@@ -97,58 +110,72 @@ export class FotoGastoPage implements OnInit {
     const status = await Network.getStatus();
     let gastoTemp: string = '';
     let gastoLoc: string = '';
-    await this.storage.getData('newGasto').then(data => gastoTemp = data || JSON.stringify(this._gastoDerfault));
-    await this.storage.getData('gastosLocales').then(data => gastoLoc = data || '[]');
+
+    gastoTemp = await this.appStorage.get('newGasto') || this._gastoDefault;
+    gastoLoc = await this.appStorage.get('gastosLocales') || '[]';
+
     const gasto: GastoTemp = JSON.parse(gastoTemp);
     
-    if (status.connected) {
-      const newGasto: GastoApi = { 
-        id: 0,
-        aprobado: 0,
-        dispositivo: this.dispositivo_id.identifier,
-        fecha: gasto.fecha.substring(0, 10),
-        tipodoc: gasto.tipoDoc,
-        docnro: gasto.factura,
-        latitud: gasto.latitud,
-        longitud: gasto.longitud,
-        monto: gasto.monto,
-        motivogasto: gasto.motivo,
-        motivo: '',
-        observ: gasto.observacion,
-        rutprov: gasto.rut,
-        razonsocial: gasto.proveedor,
-        tipogasto: gasto.tipo,
-        usuario: this.usuario,
-        fregistro: this.fechaAct,
-        habilitado: 0,
-        origen: 0,
-        hregistro: this.hora
-      }
-
+    const newGasto: GastoApi = { 
+      id: 0,
+      aprobado: 0,
+      dispositivo: this.dispositivo_id.identifier,
+      fecha: gasto.fecha.substring(0, 10),
+      tipodoc: gasto.tipoDoc,
+      docnro: gasto.factura,
+      latitud: gasto.latitud,
+      longitud: gasto.longitud,
+      monto: gasto.monto,
+      motivogasto: gasto.motivo,
+      motivo: '',
+      observ: gasto.observacion,
+      rutprov: gasto.rut,
+      razonsocial: gasto.proveedor,
+      tipogasto: gasto.tipo,
+      usuario: this.usuario,
+      fregistro: this.fechaAct,
+      habilitado: 0,
+      origen: 0,
+      hregistro: this.hora
+    }
+    
+    if (status.connected) {  
       console.log('Gasto:', newGasto);
       
       this.gastosServ.crearGasto(newGasto, this.idEmpresa).subscribe({
-        next: resp => {
+        next: async resp => {
+          //alert(JSON.stringify(resp));
           if (resp.info.result == 1) {
-            
+            const idGasto = resp.info.extra1;
+            this.gastosServ.uploadFoto(this.idEmpresa, idGasto, this.file).subscribe({
+              next: resp => console.log(resp),
+              error: err => console.log(err)
+            });
+            await this.appStorage.remove('newGasto');
+            this.loadingCtrl.dismiss();
+            this.modal.backdropDismiss = false;
+            this.modal.present();
+          }else{
+            alert(JSON.stringify(resp))
           }
         },
-        error: err => console.log(err)
+        error: err => {
+          console.log(err);
+          alert(JSON.stringify(err));
+        }
       });
     } else {
-      let gastos: any;
-      const newGasto: GastoTemp = {...gasto};
-      this.storage.getData('gastos').then( data => gastos = data || '' );
-      const arrGastos: GastoTemp[] = JSON.parse(gastos);
+      
+      const arrGastos: GastoApi[] = JSON.parse(gastoLoc);
       newGasto.photo = this.imagenCapturada;
       arrGastos.push(newGasto);
-      this.storage.set('gastos', JSON.stringify(arrGastos));
+      await this.appStorage.set('gastos', JSON.stringify(arrGastos));
+      await this.appStorage.remove('newGasto');
+      this.loadingCtrl.dismiss();
+      this.modal.backdropDismiss = false;
+      this.modal.present();
     }
 
-    this.storage.remove('newGasto');
-    this.loadingCtrl.dismiss();
-    this.modal.backdropDismiss = false;
-    this.modal.present();
   }
   
   irAlHome(){

@@ -1,5 +1,6 @@
 import { Component, OnInit } from '@angular/core';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
+import { Preferences } from '@capacitor/preferences';
 import { AlertController, LoadingController, ModalController, NavController } from '@ionic/angular';
 import { DetallesComponent } from 'src/app/components/detalles/detalles.component';
 import { GastoApi } from 'src/app/interfaces/gasto';
@@ -26,14 +27,13 @@ export class GastosFechagasPage implements OnInit {
   });
 
   constructor(private fb: FormBuilder,
-              private storage: StorageService,
+              private appStorage: StorageService,
               private gastoServ: GastosService,
               private alertCtrl: AlertController,
               private loadingCtrl: LoadingController,
-              private modalCtrl: ModalController,
-              private navCtrl: NavController) { }
+              private modalCtrl: ModalController) { }
 
-  ngOnInit() {
+  async ngOnInit() {
     const fecha = new Date();
     let mes: any = fecha.getMonth()+1;
     mes = (mes.toString().length > 1) ? mes : '0'+mes; 
@@ -42,10 +42,8 @@ export class GastosFechagasPage implements OnInit {
     this.fechaAct = `${ fecha.getFullYear() }-${ mes }-${ dia }T23:59:59`;
     this.preFecha = `${ fecha.getFullYear() }-${ mes }-${ dia }T23:59:59`;
     this.filterForm.get('fechaReg')?.reset(this.preFecha);
-    this.storage.getData('idEmpresa').then(data => {
-      const idEmp = data || '0';
-      this.idEmpresa = parseInt(idEmp);
-    });
+    let idEmp = await this.appStorage.get('empresa') || '0';
+    this.idEmpresa = parseInt(idEmp);
   }
 
 

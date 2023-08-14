@@ -4,6 +4,7 @@ import { environment } from 'src/environments/environment';
 import { Auth } from '../interfaces/auth';
 import { ApiResponse } from '../interfaces/response';
 import { StorageService } from './storage.service';
+import { Preferences } from '@capacitor/preferences';
 
 const BASE_URL = environment.base_url
 
@@ -18,7 +19,7 @@ export class AuthService {
 
 
   constructor(private http: HttpClient,
-              private storage: StorageService) { }
+              private appStorage: StorageService) { }
 
   validateUser(data: Auth){
     //return this.http.post<ApiResponse>(`https://contable.gycsol.cl/login`, data, { headers: this._header });
@@ -31,21 +32,20 @@ export class AuthService {
 
 
   
-  logout(){
-    this.storage.remove('x-token');
-    this.storage.remove('idUser');
-    this.storage.remove('rutUser');
-    this.storage.remove('idEmpresa');
+  async logout(){
+    await this.appStorage.remove('x-token');
+    await this.appStorage.remove('usuario');
+    await this.appStorage.remove('rutUser');
+    await this.appStorage.remove('empresa');
   }
 
-  isLogged(){
-    return this.storage.getData('x-token').then(data => {
-      const token: string = data;
-      if(token.trim().length === 0){
-        return false;
-      } else {
-        return true;
-      }
-    });
+  async isLogged(){
+    const x_token = await this.appStorage.get('x-token');
+    const token: string = x_token || '';
+    if(token.trim().length === 0){
+      return false;
+    } else {
+      return true;
+    }
   }
 }

@@ -6,4 +6,5 @@ interface Info{
     result: number;
     mensaje: string;
     data: any;
+    extra1?: number;
 }

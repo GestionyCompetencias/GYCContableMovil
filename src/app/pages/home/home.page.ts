@@ -6,6 +6,7 @@ import { DetallesComponent } from 'src/app/components/detalles/detalles.componen
 import { StorageService } from 'src/app/services/storage.service';
 import { DataBaseService } from 'src/app/services/data-base.service';
 import { GastosService } from 'src/app/services/gastos.service';
+import { Preferences } from '@capacitor/preferences';
 
 @Component({
   selector: 'app-home',
@@ -21,19 +22,22 @@ export class HomePage implements OnInit {
 
   idEmpresa!: number;
 
+  
+
+
   constructor(private navCtrl: NavController,
               private modalCtrl: ModalController,
-              private storageServ: StorageService,
+              private appStorage: StorageService,
               private gastoServ: GastosService) { }
 
 
 
   async ngOnInit() {
 
-      await this.storageServ.getData('idEmpresa').then(data => {
-        const idEmp = parseInt(data) || 0;
-        this.idEmpresa = idEmp;
-      });
+    const idEmp = await this.appStorage.get('empresa') || '0';
+    this.idEmpresa = parseInt(idEmp);
+
+
 
      /* this.storageServ.getData('gastosLocales').then(data => {
       console.log('gastos', data);
@@ -68,6 +72,9 @@ export class HomePage implements OnInit {
       next: resp => {
         this.ultimosGastos = resp.info.data || [];
         this.totalRegistrados = this.ultimosGastos.length;
+        this.ultimosGastos.sort((a, b) => b.id - a.id);
+        console.log(this.ultimosGastos);
+        
         this.getMontoTotal();
         let index = 0;
         this.ultimosGastos.forEach(item => {

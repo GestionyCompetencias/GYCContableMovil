@@ -15,19 +15,22 @@ export class SettingPage implements OnInit {
 
   constructor(private alertCtrl: AlertController,
               private authServ: AuthService,
-              private storage: StorageService,
+              private appStorage: StorageService,
               private nav: NavController) { }
 
-  ngOnInit() {
-    this.storage.getData('gpsActive').then(data =>{
-      let dataBoolean: boolean = (data === 'true')?true:false;
-      this.gpsActive = dataBoolean;
-    });
+  async ngOnInit() {
+    const activado = await this.appStorage.get('gpsActive');
+    let dataBoolean: boolean = (activado === 'true')?true:false;
+    this.gpsActive = dataBoolean;
+
+    /* this.storage.getData('gpsActive').then(data =>{
+    }); */
   }
 
   onOffGeolocation(){
     this.gpsActive = !this.gpsActive;
-    this.storage.set('gpsActive', this.gpsActive);
+    let activate = (this.gpsActive)?'true':'false';
+    this.appStorage.set('gpsActive', activate);
   }
 
   async presentAlert(){

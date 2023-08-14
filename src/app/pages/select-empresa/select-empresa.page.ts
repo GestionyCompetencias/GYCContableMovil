@@ -1,5 +1,6 @@
 import { Component, OnInit } from '@angular/core';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
+import { Preferences } from '@capacitor/preferences';
 import { NavController } from '@ionic/angular';
 import { EmpresaService } from 'src/app/services/empresa.service';
 
@@ -22,8 +23,9 @@ export class SelectEmpresaPage implements OnInit {
               private empresaServ: EmpresaService) { }
 
   async ngOnInit() {
-    let user: any = await localStorage.getItem('idUser') || 0;
-    this.idUser = parseInt(user);
+    const { value } = await Preferences.get({ key: 'idUser' });
+    let idus = value || '0';
+    this.idUser = parseInt(idus);
     this.getEmpresasUser( this.idUser );
   }
 
@@ -57,7 +59,7 @@ export class SelectEmpresaPage implements OnInit {
       return;
     }
 
-    localStorage.setItem('empresa', valor);
+    Preferences.set({ key: 'idEmpresa', value: valor });
     this.nav.navigateRoot('home');
   }
 

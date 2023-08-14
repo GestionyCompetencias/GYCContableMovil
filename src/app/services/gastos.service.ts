@@ -33,4 +33,11 @@ export class GastosService {
   getGatsosByFechDoc(idEmpresa: number, fechaIni: string, fechaFin: string){
     return this.http.get<ApiResponse>(`${ BASE_URL }/gastos/gastosfechadoc?fechaI=${ fechaIni }&fechaF=${ fechaFin }&empresa=${ idEmpresa }`, { headers: this._header});
   }
+
+  uploadFoto(idEmpresa:number, idGasto:any, imgUrl:File){
+    const fd =  new FormData();
+    fd.append('idGast', idGasto),
+    fd.append('image', imgUrl)
+    return this.http.post(`${ BASE_URL }/fotocomprobante?empresa=${ idEmpresa }`,fd,{headers: this._header});
+  }
 }

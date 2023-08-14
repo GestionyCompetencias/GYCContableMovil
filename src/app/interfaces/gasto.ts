@@ -47,6 +47,7 @@ export interface GastoApi{
     longitud    : number;
     latitud     : number;
     dispositivo : string;
+    photo?      : string;
   }
 
   interface Hrehistro {

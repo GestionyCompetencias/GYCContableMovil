@@ -33,10 +33,7 @@ export class HistorialGastosPage implements OnInit {
     this.fechaAct = `${ fecha.getFullYear() }-${ mes }-${ dia }T23:59:59`;
     this.preFecha = `${ fecha.getFullYear() }-${ mes }-${ dia }T23:59:59`;
     this.filterForm.get('fechaFac')?.reset(this.preFecha);
-    this.storage.getData('idEmpresa').then(data => {
-      const idEmp = data || '0';
-      this.idEmpresa = parseInt(idEmp);
-    });
+    
   }
 
 

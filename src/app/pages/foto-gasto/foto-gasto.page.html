@@ -26,7 +26,7 @@
           Volver a Capturar
         </ion-button>
         
-        <ion-button style="margin-top: 25px;" (click)="registrarGasto()" expand="block" shape="round">
+        <ion-button [disabled]="!capturada" style="margin-top: 25px;" (click)="registrarGasto()" expand="block" shape="round">
           <ion-icon slot="start" name="save-outline"></ion-icon> 
           Registrar Gasto
         </ion-button>
