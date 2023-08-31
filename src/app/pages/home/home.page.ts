@@ -58,6 +58,10 @@ export class HomePage implements OnInit {
     await this.getAllGastos();
   }
 
+  async ionViewDidEnter(){
+    await this.getAllGastos();
+  }
+
   getMontoTotal(){
     let monto: number = 0;
 
@@ -70,6 +74,7 @@ export class HomePage implements OnInit {
   getAllGastos(){
     this.gastoServ.getAll(this.idEmpresa).subscribe({
       next: resp => {
+        this.lastGastos = [];
         this.ultimosGastos = resp.info.data || [];
         this.totalRegistrados = this.ultimosGastos.length;
         this.ultimosGastos.sort((a, b) => b.id - a.id);

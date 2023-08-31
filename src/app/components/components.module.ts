@@ -7,6 +7,7 @@ import { DetallesComponent } from './detalles/detalles.component';
 import { NgxMapboxGLModule } from 'ngx-mapbox-gl';
 import { environment } from 'src/environments/environment.prod';
 import { MapViewComponent } from './map-view/map-view.component';
+import { FotoViewComponent } from './foto-view/foto-view.component';
 
 const API_KEY = environment.token_map;
 
@@ -18,6 +19,7 @@ const API_KEY = environment.token_map;
     FooterComponent,
     DetallesComponent,
     MapViewComponent,
+    FotoViewComponent
   ],
   imports: [
     CommonModule,
@@ -30,7 +32,8 @@ const API_KEY = environment.token_map;
     HeaderComponent,
     FooterComponent,
     DetallesComponent,
-    MapViewComponent
+    MapViewComponent,
+    FotoViewComponent
   ]
 })
 export class ComponentsModule { }

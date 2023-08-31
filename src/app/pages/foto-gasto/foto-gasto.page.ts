@@ -1,5 +1,5 @@
 import { Component, OnInit, ViewChild } from '@angular/core';
-import { Camera, CameraResultType, CameraSource, ImageOptions } from '@capacitor/camera';
+import { Camera, CameraResultType, CameraSource, ImageOptions, Photo } from '@capacitor/camera';
 import { Device } from '@capacitor/device';
 import { Network } from '@capacitor/network';
 import { IonModal, LoadingController, NavController } from '@ionic/angular';
@@ -44,12 +44,12 @@ export class FotoGastoPage implements OnInit {
   fechaAct!: string;
   hora!: string;
 
-  file!: any;
+  file!: File;
 
   gastosLocales: GastoTemp[] = [];
 
   capturada: boolean = false;
-  imagenCapturada!: any;
+  imagenCapturada: string | undefined = '';
   image_path!: string;
 
   constructor(private loadingCtrl: LoadingController,
@@ -83,26 +83,47 @@ export class FotoGastoPage implements OnInit {
   
   async takePicture(){
     const imgOptions: ImageOptions = {
-      quality: 80,
+      quality: 60,
       source: CameraSource.Prompt,
-      resultType: CameraResultType.Uri,
+      resultType: CameraResultType.Base64,
       saveToGallery:  true,
     }
 
-    const image = await Camera.getPhoto(imgOptions);
-    this.capturada = true;
+    Camera.getPhoto(imgOptions).then(async (imageData)=>{
+      this.capturada = true;
+      this.image_path = `data:image/jpeg;base64,${ imageData.base64String }`;
+      this.imagenCapturada = imageData.base64String;
+      const base64Response = await  fetch(`data:image/jpeg;base64,${ imageData.base64String }`);
+      const blob = await base64Response.blob();
+      this.file = this.blobToFile(blob, 'evidencia_gasto');
+    });
+
+    //const image = await Camera.getPhoto(imgOptions);
+    //this.capturada = true;
     
-    this.imagenCapturada = image.webPath;
-    this.image_path = `data:image/jpeg;base64,${image.base64String}`; 
-    const base64Response = await  fetch(this.image_path);
-    const blob = await base64Response.blob();
+    //this.imagenCapturada = image.webPath;
+
+    //await this.readAsBase64(image);
+
+    //this.image_path = `data:image/jpeg;base64,${ image.base64String }`; 
+    //const base64Response = await  fetch(image.webPath!);
+
+    //const blob = await base64Response.blob();
+    //this.blobToFile(blob, 'evidencia_gasto');
+    
+  }
+  
+  blobToFile(theBlob: Blob, fileName: string){
+    return new File([theBlob], fileName, { lastModified: new Date().getTime(), type: theBlob.type });
+  }
+  
+  /* private async readAsBase64(photo: Photo) {
+    // Fetch the photo, read as a blob, then convert to base64 format
+    const response = await fetch(photo.webPath!);
+    const blob = await response.blob();
     this.file = this.blobToFile(blob, 'evidencia_gasto');
-  }
+  } */
 
-
-  blobToFile(theBlob: any, fileName: string){       
-    return new File([theBlob], fileName, { lastModified: new Date().getTime(), type: theBlob.type })
-  }
 
   async registrarGasto(){
     this.showLoading();
@@ -147,14 +168,22 @@ export class FotoGastoPage implements OnInit {
           //alert(JSON.stringify(resp));
           if (resp.info.result == 1) {
             const idGasto = resp.info.extra1;
-            this.gastosServ.uploadFoto(this.idEmpresa, idGasto, this.file).subscribe({
-              next: resp => console.log(resp),
-              error: err => console.log(err)
+
+            const datos = {
+              IdGas: idGasto,
+              Img64: this.imagenCapturada
+            }
+            
+            this.gastosServ.uploadFoto(this.idEmpresa, datos).subscribe({
+              next: result => {
+                //alert(JSON.stringify(result));
+                this.appStorage.remove('newGasto');
+                this.modal.backdropDismiss = false;
+                this.modal.present();
+                this.loadingCtrl.dismiss();
+              },
+              error: err => alert(JSON.stringify(err))
             });
-            await this.appStorage.remove('newGasto');
-            this.loadingCtrl.dismiss();
-            this.modal.backdropDismiss = false;
-            this.modal.present();
           }else{
             alert(JSON.stringify(resp))
           }
